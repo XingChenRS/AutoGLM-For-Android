@@ -9,6 +9,8 @@ import android.os.Build
 import android.util.Base64
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
 import com.kevinluo.autoglm.R
 import com.kevinluo.autoglm.util.Logger
 
@@ -80,6 +82,8 @@ class AutoGLMKeyboardService : InputMethodService() {
         super.onDestroy()
     }
 
+    private var switchButton: ImageButton? = null
+
     /**
      * Called when the keyboard view is created.
      *
@@ -97,7 +101,58 @@ class AutoGLMKeyboardService : InputMethodService() {
         // Create a minimal status view
         val view = layoutInflater.inflate(R.layout.keyboard_autoglm, null)
         
+        // Setup switch keyboard button
+        switchButton = view.findViewById<ImageButton>(R.id.btn_switch_keyboard)?.apply {
+            setOnClickListener { switchToNextKeyboard() }
+        }
+        
+        // Update button visibility based on system UI
+        updateSwitchButtonVisibility()
+        
         return view
+    }
+
+    /**
+     * Updates the visibility of the switch keyboard button.
+     * 
+     * Only shows the button if:
+     * 1. System doesn't show its own switch button (shouldOfferSwitchingToNextInputMethod)
+     * 2. There are multiple input methods enabled
+     */
+    private fun updateSwitchButtonVisibility() {
+        val shouldShow = !shouldOfferSwitchingToNextInputMethod()
+        Logger.d(TAG, "Switch button visibility: shouldShow=$shouldShow, systemOffers=${shouldOfferSwitchingToNextInputMethod()}")
+        switchButton?.visibility = if (shouldShow) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * Switches to the next input method (keyboard).
+     * 
+     * This allows users to quickly switch to another keyboard without
+     * going through system settings.
+     */
+    private fun switchToNextKeyboard() {
+        Logger.d(TAG, "Switching to next keyboard")
+        try {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // For Android 9+, use switchToNextInputMethod
+                switchToNextInputMethod(false)
+            } else {
+                // For older versions, show input method picker
+                @Suppress("DEPRECATION")
+                imm.switchToNextInputMethod(window?.window?.attributes?.token, false)
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, "Failed to switch keyboard", e)
+            // Fallback: show input method picker dialog
+            try {
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showInputMethodPicker()
+            } catch (e2: Exception) {
+                Logger.e(TAG, "Failed to show input method picker", e2)
+            }
+        }
     }
 
     /**
@@ -125,6 +180,9 @@ class AutoGLMKeyboardService : InputMethodService() {
         
         // Ensure receiver is registered
         registerInputReceiver()
+        
+        // Update switch button visibility (system state may have changed)
+        updateSwitchButtonVisibility()
     }
 
     /**

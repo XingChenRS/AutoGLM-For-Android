@@ -25,12 +25,24 @@
     <!-- Keyboard name -->
     <TextView
         android:id="@+id/keyboard_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginStart="8dp"
         android:text="@string/keyboard_name"
         android:textColor="@color/keyboard_text"
         android:textSize="14sp"
         android:textStyle="bold" />
+
+    <!-- Switch keyboard button -->
+    <ImageButton
+        android:id="@+id/btn_switch_keyboard"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/keyboard_switch"
+        android:src="@drawable/ic_switch_keyboard"
+        android:padding="8dp"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

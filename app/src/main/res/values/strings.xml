@@ -24,13 +24,6 @@
     <string name="enable_keyboard">去启用</string>
     <string name="toast_keyboard_required">需要启用 AutoGLM Keyboard 才能输入文字</string>
     
-    <!-- Battery Optimization -->
-    <string name="battery_opt_title">电池优化</string>
-    <string name="battery_opt_ignored">已忽略电池优化</string>
-    <string name="battery_opt_not_ignored">未忽略电池优化</string>
-    <string name="battery_opt_request">去设置</string>
-    <string name="battery_opt_description">忽略电池优化可以让任务在后台更稳定地执行</string>
-    
     <!-- Task Section -->
     <string name="task_section_label">任务输入</string>
     <string name="task_input_hint">描述你想要执行的任务...</string>
@@ -238,6 +231,7 @@
     <string name="keyboard_hint">文本输入由 AutoGLM 控制</string>
     <string name="keyboard_settings_title">AutoGLM 键盘</string>
     <string name="keyboard_settings_subtitle">已启用</string>
+    <string name="keyboard_switch">切换键盘</string>
 
     <!-- Voice Input -->
     <string name="voice_input_title">语音输入</string>
